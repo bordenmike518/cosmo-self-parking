@@ -18,14 +18,13 @@ def store_raw_images():
             urllib.urlretrieve(i, "neg/" + str(pic_num) + ".jpg")
             img = cv2.imread("neg/" + str(pic_num) + ".jpg", cv2.IMREAD_GRAYSCALE)
             # should be larger than samples / pos pic (so we can place our image on it)
-            resized_image = cv2.resize(img, (400, 400))
+            resized_image = cv2.resize(img, (400, 400)) # Choose negative image size
             cv2.imwrite("neg/" + str(pic_num) + ".jpg", resized_image)
             pic_num += 1
-
         except Exception as e:
             print(str(e))
 
-
+# Find unwanted images that would effect the haar cascade.
 def find_uglies():
     for file_type in ['neg']:
         for img in os.listdir(file_type):
@@ -38,33 +37,38 @@ def find_uglies():
                         print('dayyyummm girl you ugly!')
                         print(current_image_path)
                         os.remove(current_image_path)
-
                 except Exception as e:
                     print(str(e))
 
-
+# 
 def create_pos_n_neg():
     for file_type in ['neg_200px']:
         for img in os.listdir(file_type):
-            if file_type == 'pos':
+            if file_type[0] == 'p':
                 line = file_type + '/' + img + ' 1 0 0 50 50\n'
                 with open('info.dat', 'a') as f:
                     f.write(line)
-            elif file_type == 'neg_200px':
+            elif file_type[0] == 'n':
                 line = file_type + '/' + img + '\n'
                 with open('bg_200px.txt', 'a') as f:
                     f.write(line)
 
+# Simple image resizing. Indicate file path, width, and height.
 def resize_image(img, w=50, h=50):
     pic = cv2.imread(img)
     pic = cv2.resize(pic, (w,h))
     cv2.imwrite('images/'+img, pic)
 
-#store_raw_images()
-#find_uglies()
-#create_pos_n_neg()
-# for i in range(12):
-#     nm = 'pic%i.jpg' % (i+1)
-resize_image("battery_icon.jpg", w=32, h=22)
-#resize_image('pic.jpg')
-print "SUCCESS!!"
+# Run functions in here.
+def main():
+    #store_raw_images()
+    #find_uglies()
+    #create_pos_n_neg()
+    # for i in range(12):
+    #     nm = 'pic%i.jpg' % (i+1)
+    resize_image("battery_icon.jpg", w=32, h=22)
+    #resize_image('pic.jpg')
+    print "SUCCESS!!"
+
+if __name__ == "__main__":
+    main()
